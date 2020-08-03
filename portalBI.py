@@ -4,7 +4,36 @@ import os
 from bokeh.plotting import figure, output_file, show
 from bokeh.layouts import row
 import bokeh.palettes as pl
-#http://portalbissrs.xm.com.co/dmnd/Paginas/Historicos/Historicos.aspx
+from bs4 import BeautifulSoup
+#
+
+PATH_GENERAL = 'http://portalbissrs.xm.com.co'
+PATH_REPORT = '/dmnd/Paginas/Historicos/Historicos.aspx'
+
+
+
+def obtain_list_paths(link_report, PATH_GENERAL):
+    """
+    Función que obtiene el listado de archivos excel en la página de reporte escogída
+
+    PDATA : Solo selecciona lo de demanda por ahora sin pasar de páginas.
+    """
+    path = link_report
+    r = requests.get(path)
+    r.encoding = "utf-8"
+    msg = "No pudimos conseguir el Archivo via web"
+    if r.status_code != 200:
+        print(msg)
+    data = r.text
+    if not data:
+        print(msg)
+    soup = BeautifulSoup(data, "html.parser")
+    table = soup.find("table").find_all('a')
+
+    files = [(PATH_GENERAL + i.get('href')) for i in table if "xls" in i.get('href')]
+
+    return files
+
 
 def download_file(file, path_link):
     """
@@ -168,6 +197,12 @@ if __name__ == '__main__':
     #Grafico las fechas
     graficar(to_plot)
     #Se guarda la información graficada en un Excel
+
+    #Listado de arcivos en al carpeta de históricos de demanda.
+    obtain_list_paths(PATH_GENERAL + PATH_REPORT, PATH_GENERAL)
+
+
+
     with pd.ExcelWriter('Demanda_output.xlsx') as writer:  
 
         (pd.concat(to_plot,axis=1)).to_excel(writer, sheet_name='Demanda')
