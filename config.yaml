@@ -1,0 +1,24 @@
+load_files:
+  url: 'http://portalbissrs.xm.com.co/dmnd/Histricos/'
+  load_comercial_folder:    
+    folder: 'Demanda%20Comercial/'
+    queries:
+      demanda_noregulada_CIUU: 'Demanda_Comercial_No_Regulada_Por_CIIU'
+      demanda_por_comercializador: 'Demanda_Comercial_Por_Comercializador_'
+      demanda_por_OR: 'Demanda_por_OR_'
+      perdidas_por_com: 'Perdidas_De_Energia_Por_Comercializador_'
+  load_national_folder:
+    folder: 'Demanda%20Nacional/'
+    queries:
+      demanda_energia_SIN: 'Demanda_Energia_SIN_'
+      ties_ecuador: 'Exportacion_Importacion_Ecuador_'
+      ties_venezuela: 'Exportacion_Importacion_Venezuela_'
+  load_potencia:
+    folder: 'Demanda%20Potencia/'
+    queries:
+      demanda_potencia: 'Demanda_Maxima_De_Potencia_'
+  load_energia_cargo_exce:
+    folder: ' '
+    queries:
+      load_en_exc_cargo: 'Demanda_Energia_Cargo_Excedentaria_(KWh)_'
+

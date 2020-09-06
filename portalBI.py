@@ -7,7 +7,7 @@ import bokeh.palettes as pl
 from bs4 import BeautifulSoup
 #
 
-PATH_GENERAL = 'http://portalbissrs.xm.com.co'
+PATH_GENERAL = 'http://portalbissrs.xm.com.co/dmnd/Paginas/Historicos/Historicos.aspx'
 PATH_REPORT = '/dmnd/Paginas/Historicos/Historicos.aspx'
 
 
@@ -208,4 +208,3 @@ if __name__ == '__main__':
         (pd.concat(to_plot,axis=1)).to_excel(writer, sheet_name='Demanda')
 
     os.startfile('Demanda_output.xlsx')
-    
