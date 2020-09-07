@@ -261,29 +261,52 @@ def _main_download_load(ano, type_, type_2):
 
 
 if __name__ == '__main__':
+    import time
+
+    start = time.time()
 
     data_ini = _get_queries(type_='load_files', 
                  folder='load_comercial_folder')
 
     """DEMANDA COMERCIAL"""
-    demanda_ciiu = _main_download_load(2020, "comercial", "CIIU")
+  #  demanda_ciiu = _main_download_load(2020, "comercial", "CIIU")
     demanda_comercializador = _main_download_load(2020, "comercial", "comercializador")
-    demanda_perdidas = _main_download_load(2020, "comercial", "perdidas")
-    demanda_OR = _main_download_load(2020, "comercial", "or")
-        
-    """DEMANDA DE ENERGÍA NACIONAL"""
-    demanda_SIN = _main_download_load(2020, "nacional", "SIN")
-    ties_ecuador = _main_download_load(2020, "nacional", "ties_ecuador")
-    ties_venezuela = _main_download_load(2020, "nacional", "ties_venezuela")
+  # demanda_perdidas = _main_download_load(2020, "comercial", "perdidas")
+  # demanda_OR = _main_download_load(2020, "comercial", "or")
+  #     
+  # """DEMANDA DE ENERGÍA NACIONAL"""
+  # demanda_SIN = _main_download_load(2020, "nacional", "SIN")
+  # ties_ecuador = _main_download_load(2020, "nacional", "ties_ecuador")
+  # ties_venezuela = _main_download_load(2020, "nacional", "ties_venezuela")
 
-    """DEMANDA DE POTENCIA"""
-    demanda_potencia = _main_download_load(2020, "potencia", "")
+  # """DEMANDA DE POTENCIA"""
+  # demanda_potencia = _main_download_load(2020, "potencia", "")
 
-    """DEMANDA DE CARGO EXCEDENTE"""
-    demanda_cargo_exce = _main_download_load(2020, "excedentes_cargo", "")
+  # """DEMANDA DE CARGO EXCEDENTE"""
+  # demanda_cargo_exce = _main_download_load(2020, "excedentes_cargo", "")
 
 
+    """Ejemplo para trar la demanda mensual por comercializador"""
 
+    df = demanda_comercializador
+    df.columns = ['h' +str(int(x)+1) if len(str(x))<=4 else x for x in df.columns]
+
+    from datetime import datetime
+
+    df["mes"] = ""
+    for j in range(len(df)):
+        df.iloc[j,-1] = datetime.strptime(df.iloc[j,0],"%Y-%m-%d").month
+
+    lista_grupos = []
+    for k in list(df.columns)[3:-1]:
+        lista_grupos.append(df.groupby(['Codigo Comercializador','Mercado',"mes"])[k].agg("sum"))
+    
+    mercado = pd.concat(lista_grupos, axis = 1)    
+    mercado["Total/dia(GWh)"] = mercado.sum(axis=1) 
+    Total_mes_ano = pd.DataFrame(mercado.loc[:,"Total/dia(GWh)"].apply(lambda x: x/1000000)).reset_index()
+    
+    end = time.time()
+    print("El tiempo transcurrido es:",(end-start)/60, "mn")
 
 
 
